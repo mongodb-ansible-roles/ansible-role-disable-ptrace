@@ -1,0 +1,22 @@
+---
+- name: Disable ptrace as per BUILD-7804
+  lineinfile:
+    path: /etc/sysctl.d/ptrace_scope.conf
+    regexp: '^kernel\.yama\.ptrace_scope =.*'
+    line: 'kernel.yama.ptrace_scope = 0'
+    insertafter: EOF
+    create: true
+
+- name: Read contents of ptrace_scope file
+  command: cat /proc/sys/kernel/yama/ptrace_scope
+  register: ptrace
+  changed_when: false
+
+- name: Update kernel settings | disable ptrace without reboot as per BUILD-7804
+  sysctl:
+    name: kernel.yama.ptrace_scope
+    value: "0"
+    state: present
+    sysctl_set: true
+    reload: true
+  when: 0 != ptrace.stdout
