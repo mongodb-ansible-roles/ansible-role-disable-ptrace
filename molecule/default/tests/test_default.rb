@@ -2,12 +2,12 @@
 
 describe file('/etc/sysctl.d/ptrace_scope.conf') do
   it { should exist }
-  its('content') { should match(%r{^kernel.yama.ptrace_scope = 0$}) }
+  its('content') { should match(/^kernel.yama.ptrace_scope = 0$/) }
 end
 
 describe file('/proc/sys/kernel/yama/ptrace_scope') do
   it { should exist }
-  its('content') { should match(%r{0}) }
+  its('content') { should match(/0/) }
 end
 
 describe command('sysctl kernel.yama.ptrace_scope') do
